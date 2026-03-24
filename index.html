@@ -202,8 +202,9 @@
     const FAR  = 380;
 
     // Min/max brightness multipliers
-    const DIM    = 0.2;
-    const BRIGHT = 1.0;
+    // > 1.0 pushes muted colours toward white
+    const DIM    = 0.15;
+    const BRIGHT = 3.5;
 
     function getCenter(el) {
       const r = el.getBoundingClientRect();
