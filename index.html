@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>coven.work</title>
+  <meta name="description" content="A collective of strange little projects.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Space+Mono&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0c;
+      --ink: #c8c4b8;
+      --muted: #4a4840;
+      --accent: #7a6a9a;
+      --glow: rgba(122, 106, 154, 0.15);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'IM Fell English', Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    canvas#stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      max-width: 560px;
+    }
+
+    .sigil {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 2.5rem;
+      opacity: 0.7;
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50%       { opacity: 0.85; transform: scale(1.04); }
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 240px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--muted);
+      opacity: 0.4;
+    }
+    .divider span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .notice {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      line-height: 2;
+      opacity: 0.6;
+    }
+
+    .notice a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .notice a:hover { border-color: var(--accent); }
+
+    .flicker {
+      display: inline-block;
+      animation: flicker 8s step-start infinite;
+    }
+    @keyframes flicker {
+      0%, 92%, 94%, 96%, 100% { opacity: 1; }
+      93%, 95% { opacity: 0.2; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="container">
+
+    <!-- Sigil: a simple geometric mark -->
+    <svg class="sigil" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="36" cy="36" r="33" stroke="#7a6a9a" stroke-width="1" opacity="0.5"/>
+      <circle cx="36" cy="36" r="2.5" fill="#7a6a9a" opacity="0.8"/>
+      <!-- spokes -->
+      <line x1="36" y1="3" x2="36" y2="69" stroke="#7a6a9a" stroke-width="0.5" opacity="0.3"/>
+      <line x1="3" y1="36" x2="69" y2="36" stroke="#7a6a9a" stroke-width="0.5" opacity="0.3"/>
+      <line x1="9.3" y1="9.3" x2="62.7" y2="62.7" stroke="#7a6a9a" stroke-width="0.5" opacity="0.3"/>
+      <line x1="62.7" y1="9.3" x2="9.3" y2="62.7" stroke="#7a6a9a" stroke-width="0.5" opacity="0.3"/>
+      <!-- inner hexagon -->
+      <polygon points="36,16 52.6,26 52.6,46 36,56 19.4,46 19.4,26"
+               stroke="#7a6a9a" stroke-width="0.8" fill="none" opacity="0.45"/>
+    </svg>
+
+    <h1>coven<span class="flicker">.</span>work</h1>
+
+    <p class="subtitle">
+      Strange little projects.<br>
+      Made carefully, released quietly.
+    </p>
+
+    <div class="divider"><span>est. mmxxvi</span></div>
+
+    <p class="notice">
+      Something is being made here.<br>
+      Check back when the stars are right.<br><br>
+      <a href="https://github.com/CovenWork" target="_blank" rel="noopener">github</a>
+    </p>
+
+  </div>
+
+  <script>
+    // Tiny star field
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const STAR_COUNT = 160;
+    const stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1.2 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.0004 + 0.0001,
+      phase: Math.random() * Math.PI * 2,
+    }));
+
+    function draw(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        const alpha = s.a * (0.5 + 0.5 * Math.sin(t * s.speed * 1000 + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,196,185,${alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
