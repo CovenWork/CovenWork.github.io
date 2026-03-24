@@ -172,26 +172,38 @@
     resize();
     window.addEventListener('resize', resize);
 
-    const stars = Array.from({ length: 160 }, () => ({
-      x: Math.random(), y: Math.random(),
-      r: Math.random() * 1.4 + 0.7,       // 0.7–2.1px (was 0.2–1.4)
-      a: Math.random() * 0.5 + 0.4,       // 0.4–0.9 base alpha (was 0–1, averaged dim)
-      speed: Math.random() * 0.00008 + 0.00003, // ~5–8x slower twinkle
-      phase: Math.random() * Math.PI * 2,
-    }));
+    // Real night sky has warm, cool, and neutral stars — subtle tints
+    const STAR_COLORS = [
+      [220, 218, 210], // warm white
+      [200, 210, 225], // cool blue-white
+      [225, 215, 200], // faint amber
+      [215, 215, 220], // neutral
+    ];
 
-    function drawStars(t) {
+    const stars = Array.from({ length: 160 }, () => {
+      const c = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
+      return {
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 1.4 + 0.6,
+        a: Math.random() * 0.45 + 0.35,  // 0.35–0.8, static
+        c,
+      };
+    });
+
+    // Draw once — stars are static
+    function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (const s of stars) {
-        const alpha = s.a * (0.5 + 0.5 * Math.sin(t * s.speed * 1000 + s.phase));
         ctx.beginPath();
         ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200,196,185,${alpha})`;
+        ctx.fillStyle = `rgba(${s.c[0]},${s.c[1]},${s.c[2]},${s.a})`;
         ctx.fill();
       }
-      requestAnimationFrame(drawStars);
     }
-    requestAnimationFrame(drawStars);
+
+    drawStars();
+    window.addEventListener('resize', drawStars);
 
 
     // ── Proximity lighting ───────────────────────────────────────
